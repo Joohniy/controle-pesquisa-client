@@ -1,0 +1,76 @@
+.list-container {
+    border: 1px solid #aaa;
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 10em;
+}
+
+.horizontal-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    color: red;
+}
+
+li {
+    padding: 5px;
+    border-right: 1px solid #ccc;
+    margin-right: 5px;
+    white-space: nowrap;
+}
+
+li:last-child {
+    border-right: none;
+}
+
+.input-register-container {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-register {
+    width: 40%; 
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .checkbox-container {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-checkbox {
+    margin-right: 5px; 
+  }
+  
+  .addAnexos {
+    cursor: pointer;
+    color: #29caa7;
+  }
+
+  .button-register-container {
+    margin-top: 10px; /* Espaço superior entre o botão e os campos de entrada */
+  }
+  
+  .button-register {
+    background: #4b7097;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .button-register:hover {
+    background: #33363a;
+  }
+  
+
+
