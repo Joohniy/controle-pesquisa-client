@@ -2,12 +2,19 @@ import { render, screen, waitFor } from "../../test-utils/index";
 import userEvent from "@testing-library/user-event";
 import RegisterOficio from "../../components/RegisterOficio";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 jest.mock("axios");
+jest.mock("react-toastify");
+const mockedUseNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedUseNavigate
+}));
 
 test("add anexos", async () => {
   const user = userEvent.setup();
@@ -50,9 +57,7 @@ test("submit form is sent successfully", async () => {
   const inputNome = screen.getByLabelText(/quem pediu/i);
   await user.type(inputNome, "Any");
   expect(inputNome).toHaveValue("Any");
-
   await userEvent.click(screen.getByRole("button", { name: /enviar/i }));
-
   await waitFor(() => {
     expect(axios.post).toHaveBeenCalledWith(
       "http://localhost:3030/register/oficio",
@@ -67,11 +72,16 @@ test("submit form is sent successfully", async () => {
       }
     );
   });
+  await waitFor(() => {
+    expect(toast.success).toHaveBeenCalledWith('Pedido de oficio cadastrado com sucesso');
+  });
+  await waitFor(() => {
+    expect(mockedUseNavigate).toHaveBeenCalledWith('/main');
+  });
 });
 
 test("error message when clicking in submit button when fields are empty", async () => {
   render(<RegisterOficio tipoRequer={"Oficio"} />);
-
   async function testInputFields (inputLabel, testId, errorMessageExpected) {
     const user = userEvent.setup();
     const submitButton = screen.getByRole("button", { name: /enviar/i });
@@ -86,7 +96,7 @@ test("error message when clicking in submit button when fields are empty", async
       const errorMessage = screen.getByTestId(testId);
       expect(errorMessage).toHaveTextContent(errorMessageExpected);
     });
-  }
+  };
   await testInputFields("Numero do Oficio", "error-message-numoficio", "Campo obrigatório");
   await testInputFields("Secretaria", "error-message-secretaria", "Campo obrigatório");
   await testInputFields("Nº do processo", "error-message-numprocesso", "Campo obrigatório");
