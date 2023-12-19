@@ -45,7 +45,7 @@ export default function FormPesquisas() {
     })
     .then((response) => {
         console.log(response)
-        clearInputs()
+        clearInputs();
     })
     .catch((error) => console.log(error))
   };

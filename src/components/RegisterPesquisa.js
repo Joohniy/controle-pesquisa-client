@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "../pages/css/register.css";
 
 export default function RegisterPesquisa({ tipoRequer }) {
@@ -41,11 +43,11 @@ export default function RegisterPesquisa({ tipoRequer }) {
             anexos: arrayAnexos,
           })
           .then((res) => {
-            console.log(res.data);
+            toast.success(res.data);
             navigate("/main");
           })
           .catch((error) => {
-            console.log(error, "Algo deu errado no registro");
+            toast.error(error.response.data)
             navigate("/register/pesquisa");
           });
   };
@@ -60,7 +62,7 @@ export default function RegisterPesquisa({ tipoRequer }) {
 
   return (
     <div>
-    <h4>Register Pesquisa</h4>
+    <h4>Cadastrar pedido de Pesquisa</h4>
       <form onSubmit={handleSubmit(submitData)} >
         <div className="input-register-container">
           <label htmlFor="numpesquisa">Numero da pesquisa</label>
@@ -71,17 +73,18 @@ export default function RegisterPesquisa({ tipoRequer }) {
             type="text"
             onChange={handleChanges}
           />
-          {errors.numpesquisa && <span style={{color: "red"}}>{errors.numpesquisa.message}</span>}
+          {errors.numpesquisa && <span data-testid="error-message-numpesquisa" style={{color: "red"}}>{errors.numpesquisa.message}</span>}
         </div>
         <div className="input-register-container">
-          <label>Nº do processo</label>
+          <label htmlFor="nprocesso" >Nº do processo</label>
           <input
             {...register("numprocesso")}
             className="input-register"
+            id="nprocesso"
             type="text"
             onChange={handleChanges}
           />
-          {errors.numprocesso && <span style={{color: "red"}}>{errors.numprocesso.message}</span>}
+          {errors.numprocesso && <span data-testid="error-message-numprocesso" style={{color: "red"}}>{errors.numprocesso.message}</span>}
         </div>
         <div className="input-register-container">
           <label htmlFor="anexoPesquisa" className="label-anexos">
@@ -98,6 +101,7 @@ export default function RegisterPesquisa({ tipoRequer }) {
           <div>
             <label>
               <MdOutlineAddBox
+                data-testid="addanexos"
                 className="addAnexos"
                 onClick={() => addAnexos()}
               />
@@ -113,28 +117,31 @@ export default function RegisterPesquisa({ tipoRequer }) {
           ))}
         </div>
         <div className="input-register-container">
-          <label>Data que foi pedido</label>
+          <label htmlFor="date" >Data que foi pedido</label>
           <input
             {...register("date")}
             className="input-register"
             type="date"
+            id="date"
             pattern="\d{4}-\d{2}-\d{2}"
             onChange={handleChanges}
           />
-          {errors.date && <span style={{color: "red"}}>{errors.date.message}</span>}
+          {errors.date && <span data-testid="error-message-date" style={{color: "red"}}>{errors.date.message}</span>}
         </div>
         <div className="input-register-container">
-          <label>Quem pediu?</label>
+          <label htmlFor="nome" >Nome</label>
           <input
             {...register("name")}
             className="input-register"
             name="name"
+            id="nome"
             type="text"
             onChange={handleChanges}
           />
-          {errors.name && <span style={{color: "red"}}>{errors.name.message}</span>}
+          {errors.name && <span data-testid="error-message-nome" style={{color: "red"}}>{errors.name.message}</span>}
         </div>
         <button type="submit">Enviar</button>
+        <ToastContainer />
       </form>
     </div>
   );

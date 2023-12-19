@@ -51,9 +51,8 @@ export default function RegisterOficio({ tipoRequer }) {
         navigate("/main");
       })
       .catch((error) => {
-        console.log(error);
-        toast.error(error);
-        navigate("/register");
+          toast.error(error.response.data);
+          navigate("/register"); 
       });
   };
 
@@ -67,7 +66,7 @@ export default function RegisterOficio({ tipoRequer }) {
 
   return (
     <div>
-      <h4>Register Oficio</h4>
+      <h4>Cadastrar pedido de Oficio</h4>
       <form onSubmit={handleSubmit(submitData)} data-testid="register-form">
         <div className="input-register-container">
           <label htmlFor="numoficio">Numero do Oficio</label>
