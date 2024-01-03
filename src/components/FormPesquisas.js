@@ -2,9 +2,12 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BiCheckboxChecked } from 'react-icons/bi';
-import { MdOutlineAddBox } from 'react-icons/md';
+import { BiCheckboxChecked } from "react-icons/bi";
+import { MdOutlineAddBox } from "react-icons/md";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function FormPesquisas() {
   const [values, setValues] = useState({
@@ -15,8 +18,10 @@ export default function FormPesquisas() {
     nprocesso: "",
   });
   const [hiddenProcessoInput, setHiddenProcessoInput] = useState(true);
-  const [arrayAnexos, setArrayAnexos] = useState([])
+  const [arrayAnexos, setArrayAnexos] = useState([]);
   const [anexos, setAnexos] = useState("");
+
+  const navigate = useNavigate();
 
   const handleValues = (e) => {
     setValues((prevValues) => ({
@@ -30,24 +35,35 @@ export default function FormPesquisas() {
   };
 
   const addAnexos = () => {
-    setArrayAnexos([...arrayAnexos, anexos]);
-    setAnexos("");
+    if (anexos === "") {
+      return "Não é possivel adicionar um anexo sem valor";
+      //tratar essa condicao com o zod
+    } else {
+      setArrayAnexos([...arrayAnexos, anexos]);
+      setAnexos("");
+    }
   };
 
   const submit = () => {
-    axios.post("http://localhost:3030/pesquisas/register", {
+    axios
+      .post("http://localhost:3030/pesquisas/register", {
         requerente: values.requerente,
         endereco: values.endereco,
         numero: values.numero,
         numdigital: values.numdigital,
         nprocesso: values?.nprocesso,
         anexos: arrayAnexos,
-    })
-    .then((response) => {
-        console.log(response)
+      })
+      .then((response) => {
+        toast.success(response.data);
         clearInputs();
-    })
-    .catch((error) => console.log(error))
+        navigate("/pesquisas");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data);
+        navigate("/pesquisas/register");
+      });
   };
 
   const validateSchema = z.object({
@@ -67,15 +83,14 @@ export default function FormPesquisas() {
 
   const clearInputs = () => {
     setValues((values) => ({
-        ...values,
-        requerente: "",
-        endereco: "",
-        numero: "",
-        nprocesso: "",
-        numdigital: "",
-    }))
-    setArrayAnexos([])
-  }
+      ...values,
+      requerente: "",
+      endereco: "",
+      numero: "",
+      nprocesso: "",
+      numdigital: "",
+    }));
+  };
 
   return (
     <div>
@@ -93,7 +108,7 @@ export default function FormPesquisas() {
               onChange={handleValues}
             />
             {errors.requerente && (
-              <p className="FieldErrors" style={{ color: "red" }}>
+              <p data-testid="error-message-requerente" className="FieldErrors" style={{ color: "red" }}>
                 {errors.requerente.message}
               </p>
             )}
@@ -109,7 +124,7 @@ export default function FormPesquisas() {
               onChange={handleValues}
             />
             {errors.endereco && (
-              <p className="FieldErrors" style={{ color: "red" }}>
+              <p data-testid="error-message-endereco" className="FieldErrors" style={{ color: "red" }}>
                 {errors.endereco.message}
               </p>
             )}
@@ -125,31 +140,41 @@ export default function FormPesquisas() {
               onChange={handleValues}
             />
             {errors.numero && (
-              <p className="FieldErrors" style={{ color: "red" }}>
+              <p data-testid="error-message-numero" className="FieldErrors" style={{ color: "red" }}>
                 {errors.numero.message}
               </p>
             )}
           </div>
+
           <div className="input-register-container">
             <label htmlFor="numdigital">Nº Protocolo Digital</label>
             <input
-            type="text"
-            id="numdigital"
-            className="input-register"
-            values={values.numdigital}
-            {...register("numdigital")}
-            onChange={handleValues} 
+              type="text"
+              id="numdigital"
+              className="input-register"
+              value={values.numdigital}
+              {...register("numdigital")}
+              onChange={handleValues}
             />
-            {errors.numdigital && <p className="FieldError" style={{ color: "red" }}>{errors.numdigital.message}</p>}
+            {errors.numdigital && (
+              <p data-testid="error-message-numdigital" className="FieldError" style={{ color: "red" }}>
+                {errors.numdigital.message}
+              </p>
+            )}
           </div>
+
           <div>
             <label>Possui numero de processo?</label>
-            <BiCheckboxChecked 
-            size={32} 
-            onClick={() => setHiddenProcessoInput(false)} 
+            <BiCheckboxChecked
+              data-testid="icon-processo-input"
+              size={32}
+              onClick={() => setHiddenProcessoInput(false)}
             />
           </div>
-          <div className="input-register-container" hidden={hiddenProcessoInput}>
+          <div
+            className="input-register-container"
+            hidden={hiddenProcessoInput}
+          >
             <label htmlFor="nprocesso">Numero de processo</label>
             <input
               type="text"
@@ -159,23 +184,22 @@ export default function FormPesquisas() {
               {...register("nprocesso")}
               onChange={handleValues}
             />
-            <label>Anexos</label>
+
+            <label htmlFor="anexos">Anexos</label>
             <input
-             type="text" 
-             className="input-register" 
-             value={anexos} 
-             onChange={handleAnexos}
-             />
-            <MdOutlineAddBox 
-            size={25} 
-            onClick={() => addAnexos()}
+              type="text"
+              className="input-register"
+              id="anexos"
+              value={anexos}
+              onChange={handleAnexos}
             />
+            <MdOutlineAddBox size={25} onClick={() => addAnexos()} />
             <div className="list-container" hidden={arrayAnexos.length === 0}>
-             {arrayAnexos.map((anexos, key) => (
-               <ul className="horizontal-list" key={key}>
-                 <li value={anexos}>{anexos}</li>
-                </ul> 
-             ))}
+              {arrayAnexos.map((anexos, key) => (
+                <ul className="horizontal-list" key={key}>
+                  <li value={anexos}>{anexos}</li>
+                </ul>
+              ))}
             </div>
           </div>
           <div>
@@ -184,6 +208,7 @@ export default function FormPesquisas() {
             </button>
           </div>
         </div>
+        <ToastContainer />
       </form>
     </div>
   );

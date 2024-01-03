@@ -63,7 +63,7 @@ export default function Main() {
         cellId: cellId,
       })
       .then((response) => {
-        fetchDataValues()
+        fetchDataValues();
       })
       .catch((error) => console.log(error));
   };
@@ -118,6 +118,7 @@ export default function Main() {
               </td>
               <td>                
                 <BiSolidEdit 
+                data-testid="icon-edit-main"
                 title="Editar"
                 onClick={() => handleEditCell(values)} />
                 {openModalEdit && (
@@ -127,7 +128,11 @@ export default function Main() {
                   fetchNewDataValues={() => fetchDataValues()}
                   />
                 )}
-                <BiSolidTrashAlt title="Deletar" onClick={() => handleDeleteCell(values.id, values.tipo_requer)}/>
+                <BiSolidTrashAlt
+                data-testid="icon-deletecell-main" 
+                title="Deletar" 
+                onClick={() => handleDeleteCell(values.id, values.tipo_requer)}
+                />
               </td>
             </tr>
           </tbody>
@@ -138,7 +143,7 @@ export default function Main() {
 
   return (
     <div>
-      <h1>Hello</h1>
+      <h3>Solicitados</h3>
       <label htmlFor="select-typerequer">Filtrar por:</label>
       <select
         className="select-filtrar"
@@ -149,6 +154,7 @@ export default function Main() {
         <option>Oficio</option>
         <option>Pesquisa</option>
       </select>
+      {/*quando criar o componente Table, ter como props, type assim passar o valor via props do select*/}
       <Table />
       {openModal && (
         <Observacoes
