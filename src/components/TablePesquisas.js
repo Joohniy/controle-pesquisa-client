@@ -81,6 +81,8 @@ export default function TablePesquisas() {
       })
       .catch((error) => console.log(error));
   };
+   
+  console.log(data);
 
   return (
     <>
