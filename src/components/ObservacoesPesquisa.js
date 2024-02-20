@@ -35,7 +35,7 @@ export default function ModalObservacoesPesquisa({ closeModalObservacoesPesquisa
 
     return (
       <div className="modaal">
-        <h3>Olá modal observaçoes</h3>
+        <h3>Modal observaçoes</h3>
         <div>
           <ul>
             {console.log(observacoes)}

@@ -36,6 +36,7 @@ export default function TablePesquisas() {
       };
       fetchAnexos(value.id);
     }, [value.id]);
+    console.log(anexos)
     return (
       <td>
         {!value.numero_processo
@@ -82,8 +83,6 @@ export default function TablePesquisas() {
       .catch((error) => console.log(error));
   };
    
-  console.log(data);
-
   return (
     <>
       {data.map((values, index) => (
@@ -115,10 +114,12 @@ export default function TablePesquisas() {
                 <td>
                   <IoIosListBox 
                   title="Observações"
+                  data-testid="icon-observacoes"
                   onClick={() => handleOpenModalObservacoes(values)} 
                   size={22}
                   />
                   <BiSolidEdit
+                  data-testid="icon-edit"
                   size={22}
                   onClick={() => handleOpenModalEditPesquisa(values)}
                   />

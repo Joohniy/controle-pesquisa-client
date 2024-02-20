@@ -4,6 +4,9 @@ import "../pages/css/main.css";
 import Observacoes from "../pages/js/observacoes";
 import { BiSolidTrashAlt, BiSolidEdit } from "react-icons/bi";
 import CellEdit from "../components/CellEdit";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function TablePedidos({ type }) {
   const [dataValues, setDataValues] = useState([]);
@@ -17,7 +20,8 @@ export default function TablePedidos({ type }) {
     axios
     .get("http://localhost:3030/main")
     .then((response) => {
-        setDataValues(response.data.dataValues[0]);
+      setDataValues(response.data.dataValues[0]);
+      console.log(response.data.dataValues[0])
     })
     .catch((error) => console.log(error));
   }, []);
@@ -51,6 +55,7 @@ export default function TablePedidos({ type }) {
               {valuesAnexos.processo_anexo}
             </p>
           ))}
+          
         </div>
       </td>
     );
@@ -58,14 +63,20 @@ export default function TablePedidos({ type }) {
 
   const handleDeleteCell = (cellId, requer) => {
     axios
-      .post("http://localhost:3030/main/delete", {
-        requer: requer,
-        cellId: cellId,
-      })
+      .delete(`http://localhost:3030/main/delete/${cellId}/${requer}`)
       .then((response) => {
+        toast.success(response.data);
         fetchDataValues();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          toast.error(error.response.data);
+        } else if (error.message) {
+          toast.error(error.message);
+        } else {
+          toast.error("Erro ao deletar o pedido");
+        }
+      });
   };
 
   const handleEditCell = (values) => {
@@ -79,7 +90,6 @@ export default function TablePedidos({ type }) {
       (valuesType) => valuesType.tipo_requer === type
     );
   }
-
   return selectedValues.length > 0 ? (
     <div>
     {selectedValues.map((values, key) => (
@@ -145,6 +155,7 @@ export default function TablePedidos({ type }) {
       )}
     </div>
   ))}
+  <ToastContainer />
     </div>
   ) : <div>Não existe pedidos para {type}</div>;
 }
