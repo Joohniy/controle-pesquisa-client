@@ -6,6 +6,8 @@ import { IoIosListBox } from "react-icons/io";
 import AddProcessoModal from "./AddProcessoModal";
 import ModalObservacoesPesquisa from "./ObservacoesPesquisa";
 import CellEditPesquisas from "./CellEditPesquisas";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function TablePesquisas() {
   const [data, setData] = useState([]);
@@ -36,7 +38,6 @@ export default function TablePesquisas() {
       };
       fetchAnexos(value.id);
     }, [value.id]);
-    console.log(anexos)
     return (
       <td>
         {!value.numero_processo
@@ -73,11 +74,10 @@ export default function TablePesquisas() {
 
   const handleDeleteCell = (cellId) => {
     axios
-      .post("http://localhost:3030/pesquisas/delete", {
-        cellId: cellId,
-      })
+      .delete(`http://localhost:3030/pesquisas/delete/${cellId}`)
       .then((response) => {
         console.log(response.data);
+        toast.success(response.data)
         fetchData();
       })
       .catch((error) => console.log(error));
@@ -124,6 +124,7 @@ export default function TablePesquisas() {
                   onClick={() => handleOpenModalEditPesquisa(values)}
                   />
                   <BiSolidTrashAlt
+                  data-testid="icon-delete"
                   title="Deletar"
                   size={22}
                   onClick={() => handleDeleteCell(values.id)}
@@ -154,6 +155,7 @@ export default function TablePesquisas() {
         updateTable={fetchData}  
         />
       ) : null}
+      <ToastContainer />
     </>
   );
 }

@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import "./ModalEdit.css";
 import axios from "axios";
 import AnexosEdit from "./AnexosEdit";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function CellEdit({ editingItem, closeModalEdit, fetchNewDataValues }) {
   const [closeModal, setCloseModal] = useState(false);
@@ -35,6 +38,7 @@ export default function CellEdit({ editingItem, closeModalEdit, fetchNewDataValu
         })
         .then((response) => { 
         setCloseModal(true);
+        toast.success(response.data)
         fetchNewDataValues();
         })
         .catch((error) => 
@@ -135,7 +139,7 @@ export default function CellEdit({ editingItem, closeModalEdit, fetchNewDataValu
   return (
     <div className="modal-overlay">
       <div className="modaal">
-        <h4>Edição de infomações</h4>
+        <h4>Edição de informações</h4>
         <p>Campos para editar.</p>
         <div className="buttons-div">
           {editingItem.tipo_requer === "Oficio" ? editOficio : editPesquisa}
@@ -147,6 +151,7 @@ export default function CellEdit({ editingItem, closeModalEdit, fetchNewDataValu
           <button onClick={() => handleConfirmNewValues()}>Confirmar</button>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

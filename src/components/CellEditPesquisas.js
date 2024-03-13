@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function CellEditPesquisas({ closeModal, editingCell, updateTable }) {
   const [newValues, setNewValues] = useState({});
@@ -18,8 +21,9 @@ export default function CellEditPesquisas({ closeModal, editingCell, updateTable
       existingValues: editingCell,
     })
     .then((response) => {
-      console.log(response);
       updateTable();
+      console.log(response.data)
+      toast.success(response.data)
       closeModal(false);
     })
     .catch((error) => console.log(error))
@@ -40,45 +44,50 @@ export default function CellEditPesquisas({ closeModal, editingCell, updateTable
         <div className="modaal">
             <h4>Edição de campos</h4>
             <div className="div-input-edit">
-              <label>Alterar requerente:</label>
+              <label htmlFor="edit-requerente">Alterar requerente:</label>
               <input
               onChange={handleNewValues} 
               defaultValue={editingCell.requerente}
+              id="edit-requerente"
               name="newrequerente"
               type="text"
               />
-              <label>Alterar endereço:</label>
+              <label htmlFor="edit-endereco">Alterar endereço:</label>
               <input
               onChange={handleNewValues} 
               defaultValue={editingCell.endereco}
+              id="edit-endereco"
               name="newendereco"
               type="text"
               />
-              <label>Alterar nº imóvel:</label>
+              <label htmlFor="edit-nimovel">Alterar nº imóvel:</label>
               <input
               onChange={handleNewValues}
               defaultValue={editingCell.numero_imovel} 
+              id="edit-nimovel"
               name="newnumeroImovel"
               type="text"
               />
-              <label>Alterar numero protocolo digital:</label>
+              <label htmlFor="edit-numdigital">Alterar numero protocolo digital:</label>
               <input
               onChange={handleNewValues}
               defaultValue={editingCell.numdigital}
+              id="edit-numdigital"
               name="newnumdigital"
               type="text" 
               />
-              <label>Alterar processo:</label>
+              <label htmlFor="edit-numprocesso">Alterar processo:</label>
               <input
               onChange={handleNewValues}
-              defaultValue={editingCell.numero_processo} 
+              defaultValue={editingCell.numero_processo}
+              id="edit-numprocesso" 
               name="newprocesso"
               type="text"
               />
-              <label>Alterar anexos:</label>
-              <div className="anexos-div">
-                {anexos.map((value) => (
-                  <ul>
+              <label htmlFor="edit-anexos">Alterar anexos:</label>
+              <div className="anexos-div"> 
+                {anexos.map((value, key) => (
+                  <ul key={key}>
                     <li>{value.anexos}</li>
                   </ul>
                 ))}
@@ -88,6 +97,7 @@ export default function CellEditPesquisas({ closeModal, editingCell, updateTable
             <button onClick={() => closeModal(false)}>Fechar</button>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

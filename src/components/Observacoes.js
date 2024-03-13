@@ -30,7 +30,7 @@ export default function Observacoes({ closeModal, id, tipoRequer }) {
           dateObs: dateObs,
         })
         .then((response) => {
-          setObservacoes(response.data.updatedObservacoes[0]);
+          fetchObservacoes()
           setOpenAddObservacao(false)
         })
         .catch((error) => {
@@ -46,13 +46,9 @@ export default function Observacoes({ closeModal, id, tipoRequer }) {
 
   const handleDelete = (idObs) => {
     axios
-      .post('http://localhost:3030/observacoes/delete', {
-        tipoRequer: tipoRequer,
-        observacaoId: idObs,
-      })
+      .delete(`http://localhost:3030/observacoes/delete/${tipoRequer}/${idObs}`)
       .then((response) => {
-        const updatedObservacoes = observacoes.filter((obs) => obs.id !== idObs);
-        setObservacoes(updatedObservacoes)
+        fetchObservacoes();
       })
       .catch((error) => {
         console.log(error);
@@ -75,6 +71,7 @@ function AddObservacao({ handleConfirm, buttonVoltar, observacao, setObservacao,
         <option value={"Entregue"}>Entregue</option>
       </select>
       <input
+        data-testid="date-input"
         value={dateObs}
         type="date"
         onChange={(e) => setDateObs(e.target.value)}
@@ -92,11 +89,11 @@ function AddObservacao({ handleConfirm, buttonVoltar, observacao, setObservacao,
           <h2>Observaçoes</h2>
         </div>
         <ul>
-          {observacoes.length !== 0 ? observacoes.map((obs, key) => (
+          {observacoes.length > 0 ? observacoes.map((obs, key) => (
             <li key={key}>
-              <strong>{obs.observacao} em: </strong>
-              {obs.date}.
+            {obs.observacao} em: {obs.date}.
               <BiTrash
+                data-testid="delete-obs-main"
                 onClick={() => handleDelete(obs.id)}
                 className="icon-delete"
               />

@@ -21,7 +21,6 @@ export default function ModalObservacoesPesquisa({ closeModalObservacoesPesquisa
 
 
   function ObservacoesPesquisa() {
-    
     const deleteObs = (id) => {
       axios.delete(
         `http://localhost:3030/observacoes/delete/${id}`
@@ -38,11 +37,11 @@ export default function ModalObservacoesPesquisa({ closeModalObservacoesPesquisa
         <h3>Modal observaçoes</h3>
         <div>
           <ul>
-            {console.log(observacoes)}
             {observacoes.length > 0 ? observacoes.map((observacao) => (
               <li key={observacao.id_requerimento_observacoes}>
-                <strong>{observacao.observacao} em: </strong>{observacao.date}
+                {observacao.observacao} em: {observacao.date}
                 <BiSolidTrashAlt 
+                data-testid="icon-delete-obs"
                 onClick={() => deleteObs(observacao.id_requerimento_observacoes)}
                 className="icon-delete"
                 size={18} 
@@ -81,7 +80,6 @@ export default function ModalObservacoesPesquisa({ closeModalObservacoesPesquisa
           date: date,
         })
         .then((response) => {
-          console.log(response.data);
           fetchObservacoes();
           setOpenAddObservacao(false);
         })
@@ -101,6 +99,7 @@ export default function ModalObservacoesPesquisa({ closeModalObservacoesPesquisa
           ))}
         </select>
         <input
+        data-testid="input-date"
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}

@@ -209,7 +209,7 @@ test("pesquisa cell are edited correctly", async () => {
   //expect(await screen.findByText("Pesquisa 20")).toBeInTheDocument();
 });
 
-test.only('oficio cell are edited correctly', async () => {
+test('oficio cell are edited correctly', async () => {
   const dataMockOficio = [
     {
       id: 20,
